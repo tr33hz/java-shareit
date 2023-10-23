@@ -35,13 +35,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
-        return null;
-    }
+    public void delete(Integer id) {
+        userRepository.findById(id).
+                orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-    @Override
-    public void delete(long id) {
-
+        userRepository.delete(id);
     }
 
     public User userEmailValidation(User user) {

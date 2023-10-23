@@ -41,4 +41,10 @@ public class UserRepositoryImpl implements UserRepository {
         log.info("Список всех пользователей возвращен");
         return new ArrayList<>(userMap.values());
     }
+
+    @Override
+    public void delete(Integer id) {
+        userMap.remove(id);
+
+    }
 }

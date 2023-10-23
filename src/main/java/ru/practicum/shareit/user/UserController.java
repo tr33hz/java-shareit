@@ -38,4 +38,11 @@ public class UserController {
         return userService.getAll();
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable Integer id) {
+        log.info("Поступил запрос на удаление пользователя по id = {}", id);
+        userService.delete(id);
+        log.info("Пользователь с id = {}, успешно удален", id);
+    }
+
 }
