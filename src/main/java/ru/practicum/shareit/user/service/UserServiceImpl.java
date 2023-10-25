@@ -18,7 +18,6 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
     public User addUser(User user) {
