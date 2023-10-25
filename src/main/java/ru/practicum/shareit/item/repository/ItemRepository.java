@@ -11,4 +11,6 @@ public interface ItemRepository {
     Optional<Item> findItemById(Integer itemId);
 
     List<Item> getAllItems(Integer userId);
+
+    List<Item> searchItems(String text, Integer userId);
 }

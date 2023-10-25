@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item addNewItem(Integer userId, Item item) {
         User userItem = userRepository.findById(userId).
-                orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));//exceptHandler, новое исключение
+                orElseThrow(() -> new ItemNotFoundException("Пользователь не найден"));
         item.setOwnerId(userItem.getId());
 
         return itemRepository.addNewItem(userId, item);
@@ -71,5 +72,17 @@ public class ItemServiceImpl implements ItemService {
             throw new AttempChangeImmutableItemException("Редактировать предмет может только его владелец"); // 404
         }
         return itemRepository.addNewItem(userId, itemExists);
+    }
+
+    @Override
+    public List<Item> searchItems(String text, Integer userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+
+        if (text.isBlank() || text.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return itemRepository.searchItems(text, userId);
     }
 }

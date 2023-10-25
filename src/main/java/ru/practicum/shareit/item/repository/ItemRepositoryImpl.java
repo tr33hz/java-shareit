@@ -35,7 +35,6 @@ public class ItemRepositoryImpl implements ItemRepository {
         return item;
     }
 
-
     @Override
     public Optional<Item> findItemById(Integer itemId) {
         return Optional.ofNullable(itemMap.get(itemId));
@@ -45,6 +44,15 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> getAllItems(Integer userId) {
         return itemMap.values().stream()
                 .filter(item -> item.getOwnerId().equals(userId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Item> searchItems(String text, Integer userId) {
+        return itemMap.values().stream()
+                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase())) &&
+                        item.getAvailable())
                 .collect(Collectors.toList());
     }
 

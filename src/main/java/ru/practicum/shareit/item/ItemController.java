@@ -45,4 +45,10 @@ public class ItemController {
                            @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemService.updateItem(itemId, fields, userId);
     }
+
+    @GetMapping("/search")
+    public List<Item> searchItems(@RequestParam(name = "text") String text,
+                                  @RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.searchItems(text, userId);
+    }
 }

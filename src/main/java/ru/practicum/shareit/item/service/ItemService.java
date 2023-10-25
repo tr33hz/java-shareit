@@ -13,4 +13,6 @@ public interface ItemService {
     List<Item> findAllItemsOwner(Integer userId);
 
     Item updateItem(Integer itemId, Map<String, Object> fields, Integer userId);
+
+    List<Item> searchItems(String text, Integer userId);
 }
