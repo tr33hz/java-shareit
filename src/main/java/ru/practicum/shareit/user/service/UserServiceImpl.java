@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.exceptions.UserValidationException;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
