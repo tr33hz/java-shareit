@@ -27,8 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Integer id) {
-        return userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 
     @Override
@@ -38,16 +37,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Integer id) {
-        userRepository.findById(id).
-                orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         userRepository.delete(id);
     }
 
     @Override
     public User update(Integer id, Map<String, Object> fields) {
-        User userExists = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        User userExists = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         fields.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(User.class, key);

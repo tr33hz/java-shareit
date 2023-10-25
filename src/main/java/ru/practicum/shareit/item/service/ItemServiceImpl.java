@@ -25,8 +25,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item addNewItem(Integer userId, Item item) {
-        User userItem = userRepository.findById(userId).
-                orElseThrow(() -> new ItemNotFoundException("Пользователь не найден"));
+        User userItem = userRepository.findById(userId).orElseThrow(() -> new ItemNotFoundException("Пользователь не найден"));
         item.setOwnerId(userItem.getId());
 
         return itemRepository.addNewItem(userId, item);
@@ -34,28 +33,23 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findItemById(Integer itemId, Integer userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        return itemRepository.findItemById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
+        return itemRepository.findItemById(itemId).orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
     }
 
     @Override
     public List<Item> findAllItemsOwner(Integer userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         return itemRepository.getAllItems(userId);
     }
 
     @Override
     public Item updateItem(Integer itemId, Map<String, Object> fields, Integer userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        Item itemExists = itemRepository.findItemById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
+        Item itemExists = itemRepository.findItemById(itemId).orElseThrow(() -> new ItemNotFoundException("Предмет не найден"));
 
         if (itemExists.getOwnerId().equals(userId)) {
             fields.forEach((key, value) -> {
