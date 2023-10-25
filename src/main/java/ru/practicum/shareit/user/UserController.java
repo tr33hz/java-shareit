@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * TODO Sprint add-controllers.
@@ -47,7 +46,7 @@ public class UserController {
         log.info("Пользователь с id = {}, успешно удален", id);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}") /*https://www.youtube.com/watch?v=6AJh4cJNOn0*/
     public User updateUser(@PathVariable Integer id,
                            @RequestBody Map<String, Object> fields) {
         log.info("Поступил запрос для обновления пользователя с id = {}", id);
