@@ -2,13 +2,15 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.exceptions.UserValidationException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +20,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) {
-        User savedUser = userEmailValidation(user);
-
         return userRepository.addUser(user);
     }
 
@@ -42,16 +42,36 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(id);
     }
 
-    public User userEmailValidation(User user) {
-        Optional<User> validUser = userRepository.getAll().stream()
-                .filter(userValid -> userValid.getEmail().equals(user.getEmail()))
-                .findFirst();
+    @Override
+    public User update(Integer id, Map<String, Object> fields) {
+        User userExists = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        if (validUser.isPresent()) {
-            throw new UserValidationException("Пользователь с таким email уже существует");
-        }
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(User.class, key);
+            field.setAccessible(true);
+            if (key.equals("email")) {
+                if (userEmailCheckForUpdate(id, String.valueOf(value))) {
+                    throw new UserValidationException("Email занят");
+                }
+            }
+            ReflectionUtils.setField(field, userExists, value);
+        });
 
-        return user;
+
+        return userRepository.addUser(userExists);
     }
 
+    public boolean userEmailCheckForUpdate(Integer id, String email) {
+        for (User user : userRepository.getAll()) {
+            if (user.getId() != id) {
+                if (user.getEmail().equals(email)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
+
+

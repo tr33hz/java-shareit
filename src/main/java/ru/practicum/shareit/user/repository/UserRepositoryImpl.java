@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.exceptions.UserValidationException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.util.UserIdGenerator;
 
@@ -19,10 +20,18 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User addUser(User user) {
-        user.setId(userIdGenerator.getUserId());
-        userMap.put(user.getId(), user);
 
-        log.info("Пользователь с id = {}, успешно сохранен", user.getId());
+        if (userMap.containsValue(user)) {
+            save(user);
+            log.info("Пользователь с id = {}, успешно обновлен", user.getId());
+
+        } else {
+            userEmailValidation(user);
+            user.setId(userIdGenerator.getUserId());
+            userMap.put(user.getId(), user);
+
+            log.info("Пользователь с id = {}, успешно сохранен", user.getId());
+        }
         return user;
     }
 
@@ -45,6 +54,22 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void delete(Integer id) {
         userMap.remove(id);
+    }
 
+    public void save(User user) {
+
+        user.setEmail(user.getEmail());
+        user.setName(user.getName());
+    }
+
+
+    public void userEmailValidation(User user) {
+        Optional<User> validUser = getAll().stream()
+                .filter(userValid -> userValid.getEmail().equals(user.getEmail()))
+                .findFirst();
+
+        if (validUser.isPresent()) {
+            throw new UserValidationException("Пользователь с таким email уже существует");
+        }
     }
 }
