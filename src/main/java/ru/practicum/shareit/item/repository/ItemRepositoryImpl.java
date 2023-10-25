@@ -7,7 +7,10 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.util.ItemIdGenerator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,5 +28,17 @@ public class ItemRepositoryImpl implements ItemRepository {
 
         log.info("Пользователь с id = {}, успешно сохранен", userId);
         return item;
+    }
+
+    @Override
+    public Optional<Item> findItemById(Integer itemId) {
+        return Optional.ofNullable(itemMap.get(itemId));
+    }
+
+    @Override
+    public List<Item> getAllItems(Integer userId) {
+        return itemMap.values().stream()
+                .filter(item -> item.getOwnerId().equals(userId))
+                .collect(Collectors.toList());
     }
 }

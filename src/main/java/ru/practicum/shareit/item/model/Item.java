@@ -3,10 +3,8 @@ package ru.practicum.shareit.item.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -30,6 +28,6 @@ public class Item {
     @NotNull(message = "Поле avaible не может быть пустым")
     private Boolean available;
 
-    private User owner;
+    private Integer ownerId;
 
 }
