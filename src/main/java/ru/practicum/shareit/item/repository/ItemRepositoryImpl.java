@@ -18,17 +18,23 @@ import java.util.stream.Collectors;
 public class ItemRepositoryImpl implements ItemRepository {
 
     private final Map<Integer, Item> itemMap = new HashMap<>();
-    private ItemIdGenerator itemIdGenerator = new ItemIdGenerator();
+    private final ItemIdGenerator itemIdGenerator = new ItemIdGenerator();
 
     @Override
     public Item addNewItem(Integer userId, Item item) {
 
-        item.setId(itemIdGenerator.getItemId());
-        itemMap.put(item.getId(), item);
+        if (itemMap.containsValue(item)) {
+            save(item);
+            log.info("Предмет с id = {}, успешно обновлен", item.getId());
+        } else {
+            item.setId(itemIdGenerator.getItemId());
+            itemMap.put(item.getId(), item);
 
-        log.info("Пользователь с id = {}, успешно сохранен", userId);
+            log.info("Предмет с id = {}, успешно сохранен", userId);
+        }
         return item;
     }
+
 
     @Override
     public Optional<Item> findItemById(Integer itemId) {
@@ -40,5 +46,11 @@ public class ItemRepositoryImpl implements ItemRepository {
         return itemMap.values().stream()
                 .filter(item -> item.getOwnerId().equals(userId))
                 .collect(Collectors.toList());
+    }
+
+    private void save(Item item) {
+        item.setName(item.getName());
+        item.setDescription(item.getDescription());
+        item.setAvailable(item.getAvailable());
     }
 }

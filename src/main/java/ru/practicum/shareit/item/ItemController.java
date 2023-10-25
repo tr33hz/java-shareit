@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO Sprint add-controllers.
@@ -36,5 +37,12 @@ public class ItemController {
     @GetMapping
     public List<Item> getAllItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemService.findAllItemsOwner(userId);
+    }
+
+    @PatchMapping("/{itemId}")
+    public Item updateItem(@RequestBody Map<String, Object> fields,
+                           @PathVariable Integer itemId,
+                           @RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.updateItem(itemId, fields, userId);
     }
 }
