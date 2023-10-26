@@ -47,10 +47,8 @@ public class UserServiceImpl implements UserService {
         fields.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(User.class, key);
             field.setAccessible(true);
-            if (key.equals("email")) {
-                if (userEmailCheckForUpdate(id, String.valueOf(value))) {
-                    throw new UserValidationException("Email занят");
-                }
+            if (key.equals("email") && userEmailCheckForUpdate(id, String.valueOf(value))) {
+                throw new UserValidationException("Email занят");
             }
             ReflectionUtils.setField(field, userExists, value);
         });
@@ -61,10 +59,8 @@ public class UserServiceImpl implements UserService {
 
     public boolean userEmailCheckForUpdate(Integer id, String email) {
         for (User user : userRepository.getAll()) {
-            if (user.getId() != id) {
-                if (user.getEmail().equals(email)) {
-                    return true;
-                }
+            if (user.getId() != id && user.getEmail().equals(email)) {
+                return true;
             }
         }
         return false;

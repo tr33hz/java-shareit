@@ -46,11 +46,10 @@ public class UserController {
         log.info("Пользователь с id = {}, успешно удален", id);
     }
 
-    @PatchMapping("/{id}") /*https://www.youtube.com/watch?v=6AJh4cJNOn0*/
+    @PatchMapping("/{id}")
     public User updateUser(@PathVariable Integer id,
                            @RequestBody Map<String, Object> fields) {
         log.info("Поступил запрос для обновления пользователя с id = {}", id);
         return userService.update(id, fields);
     }
-
 }
