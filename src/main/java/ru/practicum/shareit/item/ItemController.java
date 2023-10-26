@@ -22,7 +22,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    private final static String USER_HEAD = "X-Sharer-User-Id";
+    private static final  String USER_HEAD = "X-Sharer-User-Id";
 
     @PostMapping
     public Item add(@RequestHeader(USER_HEAD) Integer userId, @Valid @RequestBody Item item) {
