@@ -15,9 +15,7 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @AllArgsConstructor
 public class UserController {
-    private final String host = "localhost";
-    private final String port = "8080";
-    private final String protocol = "http";
+
     private final UserService userService;
 
     @PostMapping
