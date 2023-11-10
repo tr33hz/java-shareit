@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class User {
 
+
     private int id;
     @NotBlank(message = "Имя пользователя не может быть пустым")
     private String name;
