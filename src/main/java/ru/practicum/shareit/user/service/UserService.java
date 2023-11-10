@@ -28,6 +28,7 @@ public interface UserService {
      * Возвращает Пользователя по идентификатору
      * @param userId идентификатор пользователя
      * @return User
+     * 
      */
     User getUserById(long userId);
 
