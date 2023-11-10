@@ -1,27 +1,25 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.Data;
+import ru.practicum.shareit.booking.dto.BookingDtoShort;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
+@Data
 public class ItemDto {
+    private long id;
 
-    Integer id; //Id вещи.
+    @NotBlank(message = "Поле с именем не должно быть пустым.")
+    private String name;
 
-    @NotBlank(message = "Поле не может быть пустым")
-    @NotNull(message = "Поле не может быть пустым")
-    String name;
+    @NotBlank(message = "Поле с описанием не должно быть пустым.")
+    private String description;
 
-    @NotBlank(message = "Поле не может быть пустым")
-    @NotNull(message = "Поле не может быть пустым")
-    String description;
-
-    @NotNull(message = "Поле не может быть пустым")
-    Boolean available;
-
-    Integer ownerId; //Владелец вещи ownerId == userId.
-
+    @NotNull(message = "Поле Available не должно быть пустым.")
+    private Boolean available;
+    private BookingDtoShort lastBooking;
+    private BookingDtoShort nextBooking;
+    private List<CommentDto> comments;
 }
-

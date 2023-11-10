@@ -1,4 +1,4 @@
-package ru.practicum.shareit.mapper;
+package ru.practicum.shareit.item.mapper;
 
 import org.mapstruct.Mapper;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -6,8 +6,7 @@ import ru.practicum.shareit.item.model.Item;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
+    ItemDto convertToDto(Item item);
 
-    Item toModel(ItemDto itemDto);
-
-    ItemDto toDto(Item item);
+    Item convertFromDto(ItemDto itemDto);
 }
