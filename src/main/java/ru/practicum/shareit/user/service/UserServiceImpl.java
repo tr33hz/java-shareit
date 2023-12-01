@@ -1,70 +1,87 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
-import ru.practicum.shareit.user.exceptions.UserNotFoundException;
-import ru.practicum.shareit.user.exceptions.UserValidationException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
+
+import static ru.practicum.shareit.user.dto.UserDtoMapper.toDto;
+import static ru.practicum.shareit.user.dto.UserDtoMapper.toUser;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Override
-    public User addUser(User user) {
-        return userRepository.addUser(user);
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        log.info("Found User: " + user);
+
+        return toDto(user);
     }
 
     @Override
-    public User findById(Integer id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    public List<UserDto> getUsers() {
+        List<User> users = userRepository.findAll();
+
+        log.info("Found users: " + users);
+
+        return toDto(users);
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.getAll();
+    @Transactional
+    public UserDto addUser(UserDto user) {
+        User savedUser = userRepository.save(toUser(user));
+
+        log.info("User with id: " + savedUser.getUserId() + " saved");
+
+        return toDto(savedUser);
     }
 
     @Override
-    public void delete(Integer id) {
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    @Transactional
+    public UserDto updateUser(UserDto userDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        userRepository.delete(id);
+        update(user, userDto);
+        userRepository.save(user);
+        log.info("User with id: " + userId + " updated");
+
+        return toDto(user);
     }
 
     @Override
-    public User update(Integer id, Map<String, Object> fields) {
-        User userExists = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        fields.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(User.class, key);
-            field.setAccessible(true);
-            if (key.equals("email") && userEmailCheckForUpdate(id, String.valueOf(value))) {
-                throw new UserValidationException("Email занят");
-            }
-            ReflectionUtils.setField(field, userExists, value);
-        });
-
-
-        return userRepository.addUser(userExists);
+        userRepository.deleteById(userId);
+        log.info("User with id: " + userId + " deleted");
     }
 
-    public boolean userEmailCheckForUpdate(Integer id, String email) {
-        for (User user : userRepository.getAll()) {
-            if (user.getId() != id && user.getEmail().equals(email)) {
-                return true;
-            }
+    private User update(User user, UserDto userDto) {
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
         }
-        return false;
+
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+
+        return user;
     }
 }
-
-
