@@ -18,14 +18,17 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    private static final String USER_ID_HEAD = "X-Sharer-User-Id";
+
+
     @GetMapping("/{itemId}")
     public ItemBookingDto getItemById(@PathVariable("itemId") Long itemId,
-                                      @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                      @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemBookingDto> getItemsForUser(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemBookingDto> getItemsForUser(@RequestHeader(USER_ID_HEAD) Long userId,
                                                 @RequestParam(defaultValue = "0") int from,
                                                 @RequestParam(defaultValue = "10") int size) {
         return itemService.getItemsForUser(RequestItem.of(userId, from, size));
@@ -34,25 +37,25 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable("itemId") Long itemId,
                               @RequestBody ItemDto item,
-                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+                              @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemService.updateItem(item, userId, itemId);
     }
 
     @PostMapping
     public ItemDto addItem(@Valid @RequestBody ItemDto item,
-                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+                           @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemService.addItem(item, userId);
     }
 
     @DeleteMapping("/{itemId}")
     public ItemDto deleteItem(@PathVariable Long itemId,
-                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+                           @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemService.deleteItem(itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam("text") String text,
-                                @RequestHeader("X-Sharer-User-Id") Long userId,
+                                @RequestHeader(USER_ID_HEAD) Long userId,
                                 @RequestParam(defaultValue = "0") int from,
                                 @RequestParam(defaultValue = "10") int size) {
         return itemService.searchItem(RequestItem.of(userId, from, size, text));
@@ -60,7 +63,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@Valid @RequestBody CommentDto comment,
-                              @RequestHeader("X-Sharer-User-Id") Long userId,
+                              @RequestHeader(USER_ID_HEAD) Long userId,
                               @PathVariable("itemId") Long itemId) {
         return itemService.addComment(comment, userId, itemId);
     }
