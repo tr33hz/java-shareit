@@ -15,6 +15,9 @@ import org.springframework.web.client.RestTemplate;
 public class BaseClient {
     protected final RestTemplate rest;
 
+    private static final String USER_ID_HEAD = "X-Sharer-User-Id";
+
+
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
     }
@@ -100,7 +103,7 @@ public class BaseClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         if (userId != null) {
-            headers.set("X-Sharer-User-Id", String.valueOf(userId));
+            headers.set(USER_ID_HEAD, String.valueOf(userId));
         }
         return headers;
     }

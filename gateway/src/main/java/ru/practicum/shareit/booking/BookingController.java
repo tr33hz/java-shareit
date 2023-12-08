@@ -21,9 +21,10 @@ import javax.validation.constraints.PositiveOrZero;
 public class BookingController {
 
 	private final BookingClient bookingClient;
+	private static final String USER_ID_HEAD = "X-Sharer-User-Id";
 
 	@GetMapping
-	public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID_HEAD) long userId,
 											  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 											  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 											  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -34,21 +35,21 @@ public class BookingController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> bookItem(@RequestHeader(USER_ID_HEAD) long userId,
 										   @Valid @RequestBody BookItemRequestDto requestDto) {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
 		return bookingClient.bookItem(userId, requestDto);
 	}
 
 	@GetMapping("/{bookingId}")
-	public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> getBooking(@RequestHeader(USER_ID_HEAD) long userId,
 											 @PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
 		return bookingClient.getBooking(userId, bookingId);
 	}
 
 	@GetMapping("/owner")
-	public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") Long userId,
+	public ResponseEntity<Object> getBookings(@RequestHeader(USER_ID_HEAD) Long userId,
 											  @RequestParam(name = "state", defaultValue = "all") String stateParam,
 											  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
 											  @Positive @RequestParam(defaultValue = "10") int size) {
@@ -59,7 +60,7 @@ public class BookingController {
 	}
 
 	@PatchMapping("/{bookingId}")
-	public ResponseEntity<Object> setApprove(@RequestHeader("X-Sharer-User-Id") Long userId,
+	public ResponseEntity<Object> setApprove(@RequestHeader(USER_ID_HEAD) Long userId,
 											 @PathVariable Long bookingId,
 											 @RequestParam Boolean approved) {
 		return bookingClient.setApprove(userId, bookingId, approved);
@@ -67,7 +68,7 @@ public class BookingController {
 
 	@DeleteMapping("/{bookingId}")
 	public ResponseEntity<Object> deleteBooking(@PathVariable Long bookingId,
-												@RequestHeader("X-Sharer-User-Id") Long userId) {
+												@RequestHeader(USER_ID_HEAD) Long userId) {
 		return bookingClient.deleteBooking(bookingId, userId);
 	}
 }

@@ -15,33 +15,36 @@ public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
 
+    private static final String USER_ID_HEAD = "X-Sharer-User-Id";
+
+
     @PostMapping
     public ItemRequestDto addItemRequest(@RequestBody ItemRequestDto itemRequest,
-                                         @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                         @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemRequestService.addItemRequest(itemRequest, userId);
     }
 
     @GetMapping
-    public List<ItemRequestDto> getItemRequestsForUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemRequestDto> getItemRequestsForUser(@RequestHeader(USER_ID_HEAD) Long userId) {
         return itemRequestService.getItemRequestsForUser(userId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getItemRequestsPageable(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemRequestDto> getItemRequestsPageable(@RequestHeader(USER_ID_HEAD) Long userId,
                                          @RequestParam(defaultValue = "0") int from,
                                          @RequestParam(defaultValue = "10") int size) {
         return itemRequestService.getItemRequests(GetItemRequest.of(userId, from, size));
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto getItemRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemRequestDto getItemRequestById(@RequestHeader(USER_ID_HEAD) Long userId,
                                              @PathVariable Long requestId) {
         return itemRequestService.getItemRequestById(requestId, userId);
     }
 
     @DeleteMapping("/{requestId}")
     public ItemRequestDto deleteItemRequest(@PathVariable("requestId") Long requestId,
-                                            @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                            @RequestHeader(USER_ID_HEAD) Long userId) {
         return itemRequestService.deleteItemRequest(requestId, userId);
     }
 }

@@ -22,15 +22,18 @@ public class ItemController {
 
     private final ItemClient client;
 
+    private static final String USER_ID_HEAD = "X-Sharer-User-Id";
+
+
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItemById(@PathVariable("itemId") Long itemId,
-                                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                              @RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Get item {}, userId = {}", itemId, userId);
         return client.getItem(userId, itemId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getItemsForUser(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getItemsForUser(@RequestHeader(USER_ID_HEAD) Long userId,
                                                   @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                   @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Get items with userId = {}, from = {}, size = {}", userId, from, size);
@@ -40,7 +43,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@PathVariable("itemId") Long itemId,
                                              @RequestBody ItemDto item,
-                                             @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                             @RequestHeader(USER_ID_HEAD) Long userId) {
         checkValidItemForUpdate(item);
         log.info("Update item {}, userId = {}", itemId, userId);
         return client.update(userId, item, itemId);
@@ -48,21 +51,21 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> addItem(@Valid @RequestBody ItemDto item,
-                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+                           @RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Create item {}, userId = {}", item, userId);
         return client.add(userId, item);
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Object> deleteItem(@PathVariable Long itemId,
-                                             @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                             @RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Delete item {}, userId = {}", itemId, userId);
         return client.delete(userId, itemId);
     }
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestParam("text") String text,
-                                         @RequestHeader("X-Sharer-User-Id") Long userId,
+                                         @RequestHeader(USER_ID_HEAD) Long userId,
                                          @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                          @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Search items with text = {}, userId = {}, from = {}, size = {}", text, userId, from, size);
@@ -71,7 +74,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@Valid @RequestBody CommentDto comment,
-                                             @RequestHeader("X-Sharer-User-Id") Long userId,
+                                             @RequestHeader(USER_ID_HEAD) Long userId,
                                              @PathVariable("itemId") Long itemId) {
         log.info("Create comment {}, userId = {}, for item {}", comment, userId, itemId);
         return client.addComment(userId, itemId, comment);

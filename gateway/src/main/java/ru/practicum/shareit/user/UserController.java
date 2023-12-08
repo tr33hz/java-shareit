@@ -21,6 +21,7 @@ public class UserController {
 
     private final UserClient client;
 
+
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getUserById(@Positive @PathVariable("userId") Long userId) {
         log.info("Get user {}", userId);

@@ -19,22 +19,24 @@ import javax.validation.constraints.PositiveOrZero;
 public class RequestController {
 
     private final RequestClient client;
+    private static final String USER_ID_HEAD = "X-Sharer-User-Id";
+
 
     @PostMapping
     public ResponseEntity<Object> addItemRequest(@Valid @RequestBody ItemRequestDto itemRequest,
-                                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                                 @RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Create request {}", itemRequest);
         return client.add(userId, itemRequest);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getItemRequestsForUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getItemRequestsForUser(@RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Get requests with userId = {}", userId);
         return client.getItemRequests(userId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getItemRequestsPageable(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getItemRequestsPageable(@RequestHeader(USER_ID_HEAD) Long userId,
                                                           @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                           @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Get requests with userId = {}, from = {}, size = {}", userId, from, size);
@@ -42,7 +44,7 @@ public class RequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getItemRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getItemRequestById(@RequestHeader(USER_ID_HEAD) Long userId,
                                                      @Positive @PathVariable Long requestId) {
         log.info("Get request {}, userId = {}", requestId, userId);
         return client.getItemRequest(userId, requestId);
@@ -50,7 +52,7 @@ public class RequestController {
 
     @DeleteMapping("/{requestId}")
     public ResponseEntity<Object> deleteItemRequest(@Positive @PathVariable("requestId") Long requestId,
-                                                    @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                                    @RequestHeader(USER_ID_HEAD) Long userId) {
         log.info("Delete request {}, userId = {}", requestId, userId);
         return client.delete(requestId, userId);
     }
